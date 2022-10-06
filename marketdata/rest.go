@@ -30,7 +30,7 @@ type Client interface {
 	GetMultiBars(symbols []string, params GetBarsParams) (map[string][]Bar, error)
 	GetMultiBarsAsync(symbols []string, params GetBarsParams) <-chan MultiBarItem
 	GetLatestBar(symbol string) (*Bar, error)
-	GetLatestBars(symbols []string) (map[string]Bar, error)
+	GetLatestBars(symbols []string, feed string) (map[string]Bar, error)
 	GetLatestTrade(symbol string) (*Trade, error)
 	GetLatestTrades(symbols []string) (map[string]Trade, error)
 	GetLatestQuote(symbol string) (*Quote, error)
@@ -711,12 +711,12 @@ func (c *client) GetLatestBar(symbol string) (*Bar, error) {
 }
 
 // GetLatestBars returns the latest minute bars for the given symbols
-func (c *client) GetLatestBars(symbols []string) (map[string]Bar, error) {
+func (c *client) GetLatestBars(symbols []string, feed string) (map[string]Bar, error) {
 	u, err := url.Parse(fmt.Sprintf("%s/v2/stocks/bars/latest", c.opts.BaseURL))
 	if err != nil {
 		return nil, err
 	}
-	setLatestQueryParams(u, c.opts.Feed, symbols)
+	setLatestQueryParams(u, feed, symbols)
 
 	resp, err := c.get(u)
 	if err != nil {
@@ -1601,7 +1601,7 @@ func GetLatestBar(symbol string) (*Bar, error) {
 
 // GetLatestBars returns the latest minute bars for the given symbols.
 func GetLatestBars(symbols []string) (map[string]Bar, error) {
-	return DefaultClient.GetLatestBars(symbols)
+	return DefaultClient.GetLatestBars(symbols, "")
 }
 
 // GetLatestTrade returns the latest trade for a given symbol.
