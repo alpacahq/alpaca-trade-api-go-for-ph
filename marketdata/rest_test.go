@@ -384,7 +384,7 @@ func TestLatestBars(t *testing.T) {
 
 	// successful
 	c.do = mockResp(`{"bars":{"NIO":{"t":"2021-10-11T23:59:00Z","o":35.57,"h":35.6,"l":35.56,"c":35.6,"v":1288,"n":9,"vw":35.586483},"AAPL":{"t":"2021-10-11T23:59:00Z","o":142.59,"h":142.63,"l":142.57,"c":142.59,"v":2714,"n":22,"vw":142.589071}}}`)
-	got, err := c.GetLatestBars([]string{"AAPL", "NIO"})
+	got, err := c.GetLatestBars([]string{"AAPL", "NIO"}, "")
 	require.NoError(t, err)
 	require.NotNil(t, got)
 	require.Len(t, got, 2)
@@ -402,7 +402,7 @@ func TestLatestBars(t *testing.T) {
 
 	// api failure
 	c.do = mockErrResp()
-	got, err = c.GetLatestBars([]string{"IBM", "MSFT"})
+	got, err = c.GetLatestBars([]string{"IBM", "MSFT"}, "")
 	assert.Error(t, err)
 	assert.Nil(t, got)
 }
